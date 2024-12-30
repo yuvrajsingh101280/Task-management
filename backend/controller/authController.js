@@ -34,7 +34,7 @@ export const signup = async (req, res) => {
             // generate a token
             generateTokenAndSetCookie(res, user._id)
 
-
+            res.status(200).json({ sucess: true, message: "User Created successfully" })
 
 
 
@@ -42,6 +42,10 @@ export const signup = async (req, res) => {
         }
 
     } catch (error) {
+
+        console.log("error in creating user")
+        res.status(500).json({ success: false, message: "Internal server error" })
+
 
     }
 
