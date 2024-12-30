@@ -1,54 +1,94 @@
-import User from "../models/user.js"
-import bcrypt from "bcryptjs"
-import generateTokenAndSetCookie from "../utils/genereatetokenandsetcookie.js"
+import User from "../models/user.js";
+import bcrypt from "bcryptjs";
+import generateTokenAndSetCookie from "../utils/genereatetokenandsetcookie.js";
+
 export const signup = async (req, res) => {
-
-
-    const { email, name, password } = req.body
+    const { email, name, password } = req.body;
 
     try {
+        // Validate input
         if (!email || !password || !name) {
-            res.status(400).json({ sucess: false, message: "All fields are reuired" })
-
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required",
+            });
         }
 
-        const userExist = await User.findOne({ email })
-
-
+        // Check if user already exists
+        const userExist = await User.findOne({ email });
         if (userExist) {
-            res.status(400).json({ sucess: false, message: "User already exist" })
+            return res.status(400).json({
+                success: false,
+                message: "User already exists",
+            });
+        }
 
-        } else {
+        // Hash password
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // Create and save new user
+        const user = new User({ email, name, password: hashedPassword });
+        await user.save();
+
+        // Generate token and set cookie
+        generateTokenAndSetCookie(res, user._id);
+
+        return res.status(201).json({
+            success: true,
+            message: "User created successfully",
+        });
+    } catch (error) {
+        console.error("Error in creating user:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+};
 
 
-            const salt = 10
-            const hashedPassword = await bcrypt.hash(password, salt)
+export const login = async (req, res) => {
+    const { email, password } = req.body
 
 
-            const user = new User({ email, name, password: hashedPassword })
+    try {
+        if (!email || !password) {
+            return res.status(400).json({ success: false, message: "All fields are required" })
 
-
-            await user.save();
-
-
-            // generate a token
-            generateTokenAndSetCookie(res, user._id)
-
-            res.status(200).json({ sucess: true, message: "User Created successfully" })
-
-
-
+        }
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" })
 
         }
 
+        const passwordMatch = await bcrypt.compare(password, user.password)
+        if (!passwordMatch) {
+            return res.status(400).json({ success: false, message: "wrong password" })
+
+        }
+
+        generateTokenAndSetCookie(res, user._id)
+
+
+        return res.status(200).json({ success: true, message: "User Logged in successfully" })
     } catch (error) {
-
-        console.log("error in creating user")
-        res.status(500).json({ success: false, message: "Internal server error" })
-
+        console.log("Error in login", error)
+        return res.status(500).json({ succees: false, message: "Internal Server Error" })
 
     }
 
 
+
+
+
+
+
+}
+export const logout = async (req, res) => {
+
+    res.clearCookie("token")
+    res.status(200).json({ success: true, message: "Logged out succeesfully" })
 
 }

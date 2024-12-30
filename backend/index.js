@@ -8,6 +8,9 @@ const app = express()
 
 connectToDatabase()
 app.use(cookieParser())
+
+// middleware
+app.use(express.json())
 // routes
 app.use("/api/auth", authroutes)
 app.listen(process.env.PORT, () => {
