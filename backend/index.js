@@ -3,6 +3,9 @@ import authroutes from "./routes/authRoutes.js"
 import dotenv from "dotenv"
 import { connectToDatabase } from "./database/db.js"
 import cookieParser from "cookie-parser"
+
+import taskroute from "./routes/taskRoutes.js"
+
 dotenv.config()
 const app = express()
 
@@ -13,6 +16,7 @@ app.use(cookieParser())
 app.use(express.json())
 // routes
 app.use("/api/auth", authroutes)
+app.use("/api/task", taskroute)
 app.listen(process.env.PORT, () => {
     console.log(`server is runnning at port http://localhost:${process.env.PORT}`)
 
