@@ -1,1 +1,25 @@
-import task from "./../models/tak.js"
+import task from "../models/task";
+
+
+export const createTask = async (req, res) => {
+
+
+
+}
+export const updateTask = async (req, res) => {
+
+
+
+}
+
+export const getTasks = async (req, res) => {
+
+
+
+
+}
+export const deleteTask = async (req, res) => {
+
+
+
+}
