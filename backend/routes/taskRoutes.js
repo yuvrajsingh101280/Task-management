@@ -7,9 +7,9 @@ const router = express.Router()
 // routes
 
 
-router.post("/create", verifyToken, createTask)
-router.put("/update/:id", verifyToken, updateTask)
+router.post("/createtask", verifyToken, createTask)
+router.put("/updatetask/:id", verifyToken, updateTask)
 router.get("/get-tasks", verifyToken, getTasks)
-router.delete("/delete/:id", verifyToken, deleteTask)
+router.delete("/deletetask/:id", verifyToken, deleteTask)
 
 export default router
