@@ -14,6 +14,7 @@ app.use(cookieParser())
 
 // middleware
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))//for parsing form data
 // routes
 app.use("/api/auth", authroutes)
 app.use("/api/task", taskroute)
